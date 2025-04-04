@@ -1,0 +1,240 @@
+syntax = "proto3";
+
+option go_package = "github.com/voikin/apim-profile-store/pkg/api/v1";
+
+package api.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+import "buf/validate/validate.proto";
+
+// ----------- SERVICE -----------
+
+service ProfileStoreService {
+  // Application CRUD
+
+  rpc CreateApplication(CreateApplicationRequest) returns (CreateApplicationResponse) {
+    option (google.api.http) = {
+      post : "/v1/applications"
+      body : "*"
+    };
+  }
+
+  rpc GetApplication(GetApplicationRequest) returns (GetApplicationResponse) {
+    option (google.api.http) = {
+      get : "/v1/applications/{id}"
+    };
+  }
+
+  rpc UpdateApplication(UpdateApplicationRequest) returns (UpdateApplicationResponse) {
+    option (google.api.http) = {
+      put : "/v1/applications/{id}"
+      body : "*"
+    };
+  }
+
+  rpc DeleteApplication(DeleteApplicationRequest) returns (DeleteApplicationResponse) {
+    option (google.api.http) = {
+      delete : "/v1/applications/{id}"
+    };
+  }
+
+  rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse) {
+    option (google.api.http) = {
+      get : "/v1/applications"
+    };
+  }
+
+  // Profile operations
+
+  rpc AddProfile(AddProfileRequest) returns (AddProfileResponse) {
+    option (google.api.http) = {
+      post : "/v1/applications/{application_id}/profiles"
+      body : "*"
+    };
+  }
+
+  rpc GetProfileByID(GetProfileByIDRequest) returns (GetProfileByIDResponse) {
+    option (google.api.http) = {
+      get : "/v1/profiles/{id}"
+    };
+  }
+
+  rpc GetLatestProfile(GetLatestProfileRequest) returns (GetLatestProfileResponse) {
+    option (google.api.http) = {
+      get : "/v1/applications/{application_id}/profiles/latest"
+    };
+  }
+
+  rpc GetProfileByVersion(GetProfileByVersionRequest) returns (GetProfileByVersionResponse) {
+    option (google.api.http) = {
+      get : "/v1/applications/{application_id}/profiles/{version}"
+    };
+  }
+
+  rpc DeleteProfile(DeleteProfileRequest) returns (DeleteProfileResponse) {
+    option (google.api.http) = {
+      delete : "/v1/profiles/{id}"
+    };
+  }
+
+  rpc ListProfilesByApplication(ListProfilesByApplicationRequest) returns (ListProfilesByApplicationResponse) {
+    option (google.api.http) = {
+      get : "/v1/applications/{application_id}/profiles"
+    };
+  }
+
+  rpc ListLatestProfiles(ListLatestProfilesRequest) returns (ListLatestProfilesResponse) {
+    option (google.api.http) = {
+      get : "/v1/profiles/latest"
+    };
+  }
+}
+
+// ----------- STRUCTS -----------
+
+message Application {
+  string id = 1;
+  string name = 2;
+  google.protobuf.Timestamp created_at = 3;
+}
+
+message ApplicationProfile {
+  string id = 1;
+  string application_id = 2;
+  uint32 version = 3;
+  google.protobuf.Timestamp created_at = 4;
+  ProfileGraph graph = 5;
+}
+
+message ProfileGraph {
+  string data = 1;
+}
+
+// ----------- REQUESTS / RESPONSES -----------
+
+message CreateApplicationRequest {
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+}
+
+message CreateApplicationResponse {
+  Application application = 1;
+}
+
+message GetApplicationRequest {
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.uuid = true
+  ];
+}
+
+message GetApplicationResponse {
+  Application application = 1;
+}
+
+message UpdateApplicationRequest {
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.uuid = true
+  ];
+  string name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+}
+
+message UpdateApplicationResponse {
+  Application application = 1;
+}
+
+message DeleteApplicationRequest {
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.uuid = true
+  ];
+}
+
+message DeleteApplicationResponse {}
+
+message ListApplicationsRequest {}
+
+message ListApplicationsResponse {
+  repeated Application applications = 1;
+}
+
+message AddProfileRequest {
+  string application_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.uuid = true
+  ];
+  ProfileGraph graph = 2;
+}
+
+message AddProfileResponse {
+  ApplicationProfile profile = 1;
+}
+
+message GetProfileByIDRequest {
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.uuid = true
+  ];
+}
+
+message GetProfileByIDResponse {
+  ApplicationProfile profile = 1;
+}
+
+message GetLatestProfileRequest {
+  string application_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.uuid = true
+  ];
+}
+
+message GetLatestProfileResponse {
+  ApplicationProfile profile = 1;
+}
+
+message GetProfileByVersionRequest {
+  string application_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.uuid = true
+  ];
+  uint32 version = 2 [
+    (buf.validate.field).uint32.gt = 0
+  ];
+}
+
+message GetProfileByVersionResponse {
+  ApplicationProfile profile = 1;
+}
+
+message DeleteProfileRequest {
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.uuid = true
+  ];
+}
+
+message DeleteProfileResponse {}
+
+message ListProfilesByApplicationRequest {
+  string application_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.uuid = true
+  ];
+}
+
+message ListProfilesByApplicationResponse {
+  repeated ApplicationProfile profiles = 1;
+}
+
+message ListLatestProfilesRequest {}
+
+message ListLatestProfilesResponse {
+  repeated ApplicationProfile profiles = 1;
+}
