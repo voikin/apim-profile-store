@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/voikin/apim-profile-store/pkg/api/v1";
+option go_package = "github.com/voikin/apim-profile-store/pkg/api/api/v1";
 
 package api.v1;
 
@@ -23,7 +23,7 @@ service ProfileStoreService {
 
   rpc CreateApplication(CreateApplicationRequest) returns (CreateApplicationResponse) {
     option (google.api.http) = {
-      post : "/v1/applications"
+      post : "/api/v1/applications"
       body : "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -33,7 +33,7 @@ service ProfileStoreService {
 
   rpc GetApplication(GetApplicationRequest) returns (GetApplicationResponse) {
     option (google.api.http) = {
-      get : "/v1/applications/{id}"
+      get : "/api/v1/applications/{id}"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       tags: "Applications";
@@ -42,7 +42,7 @@ service ProfileStoreService {
 
   rpc UpdateApplication(UpdateApplicationRequest) returns (UpdateApplicationResponse) {
     option (google.api.http) = {
-      put : "/v1/applications/{id}"
+      put : "/api/v1/applications/{id}"
       body : "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -52,7 +52,7 @@ service ProfileStoreService {
 
   rpc DeleteApplication(DeleteApplicationRequest) returns (DeleteApplicationResponse) {
     option (google.api.http) = {
-      delete : "/v1/applications/{id}"
+      delete : "/api/v1/applications/{id}"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       tags: "Applications";
@@ -61,7 +61,7 @@ service ProfileStoreService {
 
   rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse) {
     option (google.api.http) = {
-      get : "/v1/applications"
+      get : "/api/v1/applications"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       tags: "Applications";
@@ -72,7 +72,7 @@ service ProfileStoreService {
 
   rpc AddProfile(AddProfileRequest) returns (AddProfileResponse) {
     option (google.api.http) = {
-      post : "/v1/applications/{application_id}/profiles"
+      post : "/api/v1/applications/{application_id}/profiles"
       body : "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -82,7 +82,7 @@ service ProfileStoreService {
 
   rpc GetProfileByID(GetProfileByIDRequest) returns (GetProfileByIDResponse) {
     option (google.api.http) = {
-      get : "/v1/profiles/{id}"
+      get : "/api/v1/profiles/{id}"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       tags: "Profiles";
@@ -91,7 +91,7 @@ service ProfileStoreService {
 
   rpc GetLatestProfile(GetLatestProfileRequest) returns (GetLatestProfileResponse) {
     option (google.api.http) = {
-      get : "/v1/applications/{application_id}/profiles/latest"
+      get : "/api/v1/applications/{application_id}/profiles/latest"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       tags: "Profiles";
@@ -100,7 +100,7 @@ service ProfileStoreService {
 
   rpc GetProfileByVersion(GetProfileByVersionRequest) returns (GetProfileByVersionResponse) {
     option (google.api.http) = {
-      get : "/v1/applications/{application_id}/profiles/{version}"
+      get : "/api/v1/applications/{application_id}/profiles/{version}"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       tags: "Profiles";
@@ -109,7 +109,7 @@ service ProfileStoreService {
 
   rpc DeleteProfile(DeleteProfileRequest) returns (DeleteProfileResponse) {
     option (google.api.http) = {
-      delete : "/v1/profiles/{id}"
+      delete : "/api/v1/profiles/{id}"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       tags: "Profiles";
@@ -118,7 +118,7 @@ service ProfileStoreService {
 
   rpc ListProfilesByApplication(ListProfilesByApplicationRequest) returns (ListProfilesByApplicationResponse) {
     option (google.api.http) = {
-      get : "/v1/applications/{application_id}/profiles"
+      get : "/api/v1/applications/{application_id}/profiles"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       tags: "Profiles";
@@ -127,7 +127,7 @@ service ProfileStoreService {
 
   rpc ListLatestProfiles(ListLatestProfilesRequest) returns (ListLatestProfilesResponse) {
     option (google.api.http) = {
-      get : "/v1/profiles/latest"
+      get : "/api/v1/profiles/latest"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       tags: "Profiles";

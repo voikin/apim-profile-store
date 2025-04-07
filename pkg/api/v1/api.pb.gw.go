@@ -2,11 +2,11 @@
 // source: v1/api.proto
 
 /*
-Package apiv1 is a reverse proxy.
+Package v1 is a reverse proxy.
 
 It translates gRPC into RESTful JSON APIs.
 */
-package apiv1
+package v1
 
 import (
 	"context"
@@ -459,7 +459,7 @@ func RegisterProfileStoreServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.v1.ProfileStoreService/CreateApplication", runtime.WithHTTPPathPattern("/v1/applications"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.v1.ProfileStoreService/CreateApplication", runtime.WithHTTPPathPattern("/api/v1/applications"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -479,7 +479,7 @@ func RegisterProfileStoreServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.v1.ProfileStoreService/GetApplication", runtime.WithHTTPPathPattern("/v1/applications/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.v1.ProfileStoreService/GetApplication", runtime.WithHTTPPathPattern("/api/v1/applications/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -499,7 +499,7 @@ func RegisterProfileStoreServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.v1.ProfileStoreService/UpdateApplication", runtime.WithHTTPPathPattern("/v1/applications/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.v1.ProfileStoreService/UpdateApplication", runtime.WithHTTPPathPattern("/api/v1/applications/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -519,7 +519,7 @@ func RegisterProfileStoreServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.v1.ProfileStoreService/DeleteApplication", runtime.WithHTTPPathPattern("/v1/applications/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.v1.ProfileStoreService/DeleteApplication", runtime.WithHTTPPathPattern("/api/v1/applications/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -539,7 +539,7 @@ func RegisterProfileStoreServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.v1.ProfileStoreService/ListApplications", runtime.WithHTTPPathPattern("/v1/applications"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.v1.ProfileStoreService/ListApplications", runtime.WithHTTPPathPattern("/api/v1/applications"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -559,7 +559,7 @@ func RegisterProfileStoreServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.v1.ProfileStoreService/AddProfile", runtime.WithHTTPPathPattern("/v1/applications/{application_id}/profiles"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.v1.ProfileStoreService/AddProfile", runtime.WithHTTPPathPattern("/api/v1/applications/{application_id}/profiles"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -579,7 +579,7 @@ func RegisterProfileStoreServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.v1.ProfileStoreService/GetProfileByID", runtime.WithHTTPPathPattern("/v1/profiles/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.v1.ProfileStoreService/GetProfileByID", runtime.WithHTTPPathPattern("/api/v1/profiles/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -599,7 +599,7 @@ func RegisterProfileStoreServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.v1.ProfileStoreService/GetLatestProfile", runtime.WithHTTPPathPattern("/v1/applications/{application_id}/profiles/latest"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.v1.ProfileStoreService/GetLatestProfile", runtime.WithHTTPPathPattern("/api/v1/applications/{application_id}/profiles/latest"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -619,7 +619,7 @@ func RegisterProfileStoreServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.v1.ProfileStoreService/GetProfileByVersion", runtime.WithHTTPPathPattern("/v1/applications/{application_id}/profiles/{version}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.v1.ProfileStoreService/GetProfileByVersion", runtime.WithHTTPPathPattern("/api/v1/applications/{application_id}/profiles/{version}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -639,7 +639,7 @@ func RegisterProfileStoreServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.v1.ProfileStoreService/DeleteProfile", runtime.WithHTTPPathPattern("/v1/profiles/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.v1.ProfileStoreService/DeleteProfile", runtime.WithHTTPPathPattern("/api/v1/profiles/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -659,7 +659,7 @@ func RegisterProfileStoreServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.v1.ProfileStoreService/ListProfilesByApplication", runtime.WithHTTPPathPattern("/v1/applications/{application_id}/profiles"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.v1.ProfileStoreService/ListProfilesByApplication", runtime.WithHTTPPathPattern("/api/v1/applications/{application_id}/profiles"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -679,7 +679,7 @@ func RegisterProfileStoreServiceHandlerServer(ctx context.Context, mux *runtime.
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.v1.ProfileStoreService/ListLatestProfiles", runtime.WithHTTPPathPattern("/v1/profiles/latest"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.v1.ProfileStoreService/ListLatestProfiles", runtime.WithHTTPPathPattern("/api/v1/profiles/latest"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -737,7 +737,7 @@ func RegisterProfileStoreServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/api.v1.ProfileStoreService/CreateApplication", runtime.WithHTTPPathPattern("/v1/applications"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/api.v1.ProfileStoreService/CreateApplication", runtime.WithHTTPPathPattern("/api/v1/applications"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -754,7 +754,7 @@ func RegisterProfileStoreServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/api.v1.ProfileStoreService/GetApplication", runtime.WithHTTPPathPattern("/v1/applications/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/api.v1.ProfileStoreService/GetApplication", runtime.WithHTTPPathPattern("/api/v1/applications/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -771,7 +771,7 @@ func RegisterProfileStoreServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/api.v1.ProfileStoreService/UpdateApplication", runtime.WithHTTPPathPattern("/v1/applications/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/api.v1.ProfileStoreService/UpdateApplication", runtime.WithHTTPPathPattern("/api/v1/applications/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -788,7 +788,7 @@ func RegisterProfileStoreServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/api.v1.ProfileStoreService/DeleteApplication", runtime.WithHTTPPathPattern("/v1/applications/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/api.v1.ProfileStoreService/DeleteApplication", runtime.WithHTTPPathPattern("/api/v1/applications/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -805,7 +805,7 @@ func RegisterProfileStoreServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/api.v1.ProfileStoreService/ListApplications", runtime.WithHTTPPathPattern("/v1/applications"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/api.v1.ProfileStoreService/ListApplications", runtime.WithHTTPPathPattern("/api/v1/applications"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -822,7 +822,7 @@ func RegisterProfileStoreServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/api.v1.ProfileStoreService/AddProfile", runtime.WithHTTPPathPattern("/v1/applications/{application_id}/profiles"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/api.v1.ProfileStoreService/AddProfile", runtime.WithHTTPPathPattern("/api/v1/applications/{application_id}/profiles"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -839,7 +839,7 @@ func RegisterProfileStoreServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/api.v1.ProfileStoreService/GetProfileByID", runtime.WithHTTPPathPattern("/v1/profiles/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/api.v1.ProfileStoreService/GetProfileByID", runtime.WithHTTPPathPattern("/api/v1/profiles/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -856,7 +856,7 @@ func RegisterProfileStoreServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/api.v1.ProfileStoreService/GetLatestProfile", runtime.WithHTTPPathPattern("/v1/applications/{application_id}/profiles/latest"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/api.v1.ProfileStoreService/GetLatestProfile", runtime.WithHTTPPathPattern("/api/v1/applications/{application_id}/profiles/latest"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -873,7 +873,7 @@ func RegisterProfileStoreServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/api.v1.ProfileStoreService/GetProfileByVersion", runtime.WithHTTPPathPattern("/v1/applications/{application_id}/profiles/{version}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/api.v1.ProfileStoreService/GetProfileByVersion", runtime.WithHTTPPathPattern("/api/v1/applications/{application_id}/profiles/{version}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -890,7 +890,7 @@ func RegisterProfileStoreServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/api.v1.ProfileStoreService/DeleteProfile", runtime.WithHTTPPathPattern("/v1/profiles/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/api.v1.ProfileStoreService/DeleteProfile", runtime.WithHTTPPathPattern("/api/v1/profiles/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -907,7 +907,7 @@ func RegisterProfileStoreServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/api.v1.ProfileStoreService/ListProfilesByApplication", runtime.WithHTTPPathPattern("/v1/applications/{application_id}/profiles"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/api.v1.ProfileStoreService/ListProfilesByApplication", runtime.WithHTTPPathPattern("/api/v1/applications/{application_id}/profiles"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -924,7 +924,7 @@ func RegisterProfileStoreServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/api.v1.ProfileStoreService/ListLatestProfiles", runtime.WithHTTPPathPattern("/v1/profiles/latest"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/api.v1.ProfileStoreService/ListLatestProfiles", runtime.WithHTTPPathPattern("/api/v1/profiles/latest"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -941,18 +941,18 @@ func RegisterProfileStoreServiceHandlerClient(ctx context.Context, mux *runtime.
 }
 
 var (
-	pattern_ProfileStoreService_CreateApplication_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "applications"}, ""))
-	pattern_ProfileStoreService_GetApplication_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "applications", "id"}, ""))
-	pattern_ProfileStoreService_UpdateApplication_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "applications", "id"}, ""))
-	pattern_ProfileStoreService_DeleteApplication_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "applications", "id"}, ""))
-	pattern_ProfileStoreService_ListApplications_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "applications"}, ""))
-	pattern_ProfileStoreService_AddProfile_0                = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"v1", "applications", "application_id", "profiles"}, ""))
-	pattern_ProfileStoreService_GetProfileByID_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "profiles", "id"}, ""))
-	pattern_ProfileStoreService_GetLatestProfile_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 2, 4}, []string{"v1", "applications", "application_id", "profiles", "latest"}, ""))
-	pattern_ProfileStoreService_GetProfileByVersion_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "applications", "application_id", "profiles", "version"}, ""))
-	pattern_ProfileStoreService_DeleteProfile_0             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "profiles", "id"}, ""))
-	pattern_ProfileStoreService_ListProfilesByApplication_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"v1", "applications", "application_id", "profiles"}, ""))
-	pattern_ProfileStoreService_ListLatestProfiles_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "profiles", "latest"}, ""))
+	pattern_ProfileStoreService_CreateApplication_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "v1", "applications"}, ""))
+	pattern_ProfileStoreService_GetApplication_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "applications", "id"}, ""))
+	pattern_ProfileStoreService_UpdateApplication_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "applications", "id"}, ""))
+	pattern_ProfileStoreService_DeleteApplication_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "applications", "id"}, ""))
+	pattern_ProfileStoreService_ListApplications_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "v1", "applications"}, ""))
+	pattern_ProfileStoreService_AddProfile_0                = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "applications", "application_id", "profiles"}, ""))
+	pattern_ProfileStoreService_GetProfileByID_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "profiles", "id"}, ""))
+	pattern_ProfileStoreService_GetLatestProfile_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 5}, []string{"api", "v1", "applications", "application_id", "profiles", "latest"}, ""))
+	pattern_ProfileStoreService_GetProfileByVersion_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"api", "v1", "applications", "application_id", "profiles", "version"}, ""))
+	pattern_ProfileStoreService_DeleteProfile_0             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "profiles", "id"}, ""))
+	pattern_ProfileStoreService_ListProfilesByApplication_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "applications", "application_id", "profiles"}, ""))
+	pattern_ProfileStoreService_ListLatestProfiles_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "profiles", "latest"}, ""))
 )
 
 var (

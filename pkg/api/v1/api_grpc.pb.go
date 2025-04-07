@@ -4,7 +4,7 @@
 // - protoc             (unknown)
 // source: v1/api.proto
 
-package apiv1
+package v1
 
 import (
 	context "context"

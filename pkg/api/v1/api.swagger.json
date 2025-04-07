@@ -16,7 +16,7 @@
     "application/json"
   ],
   "paths": {
-    "/v1/applications": {
+    "/api/v1/applications": {
       "get": {
         "operationId": "ProfileStoreService_ListApplications",
         "responses": {
@@ -68,7 +68,7 @@
         ]
       }
     },
-    "/v1/applications/{applicationId}/profiles": {
+    "/api/v1/applications/{applicationId}/profiles": {
       "get": {
         "operationId": "ProfileStoreService_ListProfilesByApplication",
         "responses": {
@@ -134,7 +134,7 @@
         ]
       }
     },
-    "/v1/applications/{applicationId}/profiles/latest": {
+    "/api/v1/applications/{applicationId}/profiles/latest": {
       "get": {
         "operationId": "ProfileStoreService_GetLatestProfile",
         "responses": {
@@ -164,7 +164,7 @@
         ]
       }
     },
-    "/v1/applications/{applicationId}/profiles/{version}": {
+    "/api/v1/applications/{applicationId}/profiles/{version}": {
       "get": {
         "operationId": "ProfileStoreService_GetProfileByVersion",
         "responses": {
@@ -201,7 +201,7 @@
         ]
       }
     },
-    "/v1/applications/{id}": {
+    "/api/v1/applications/{id}": {
       "get": {
         "operationId": "ProfileStoreService_GetApplication",
         "responses": {
@@ -295,7 +295,7 @@
         ]
       }
     },
-    "/v1/profiles/latest": {
+    "/api/v1/profiles/latest": {
       "get": {
         "operationId": "ProfileStoreService_ListLatestProfiles",
         "responses": {
@@ -317,7 +317,7 @@
         ]
       }
     },
-    "/v1/profiles/{id}": {
+    "/api/v1/profiles/{id}": {
       "get": {
         "operationId": "ProfileStoreService_GetProfileByID",
         "responses": {
