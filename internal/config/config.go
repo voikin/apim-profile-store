@@ -13,6 +13,7 @@ type Config struct {
 	Logger   *logger.Config  `mapstructure:"logger"`
 	Server   *ServerConfig   `mapstructure:"server"`
 	Postgres *PostgresConfig `mapstructure:"postgres"`
+	Neo4J    *Neo4JConfig    `mapstructure:"neo4j"`
 }
 
 type ServerConfig struct {
@@ -36,6 +37,12 @@ type HTTPConfig struct {
 
 type PostgresConfig struct {
 	DSN string `mapstructure:"dsn"`
+}
+
+type Neo4JConfig struct {
+	URI      string `mapstructure:"uri"`
+	Username string `mapstructure:"username"`
+	Password string `mapstructure:"password"`
 }
 
 func (c GRPCConfig) MaxConnectionAge() time.Duration {

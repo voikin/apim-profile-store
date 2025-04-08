@@ -9,7 +9,7 @@ import (
 type ApplicationProfile struct {
 	ID            uuid.UUID
 	ApplicationID uuid.UUID
-	Version       int64
+	Version       uint32
+	GraphID       uuid.UUID
 	CreatedAt     time.Time
-	GraphID       string
 }

@@ -14,6 +14,12 @@ const (
 	ApplicationProfileColumnVersion       = "version"
 	ApplicationProfileColumnGraphID       = "graph_id"
 	ApplicationProfileColumnCreatedAt     = "created_at"
+
+	ApplicationProfileVersionsTableName = "application_profile_versions"
+
+	ApplicationProfileVersionsColumnApplicationID = "application_id"
+	ApplicationProfileVersionsColumnLastVersion   = "last_version"
+	ApplicationProfileVersionsColumnUpdatedAt     = "updated_at"
 )
 
 var (
@@ -30,4 +36,14 @@ var (
 		ApplicationProfileColumnGraphID,
 		ApplicationProfileColumnCreatedAt,
 	}
+
+	ApplicationProfileVersionsAllColumns = []string{ //nolint:gochecknoglobals // global by design
+		ApplicationProfileVersionsColumnApplicationID,
+		ApplicationProfileVersionsColumnLastVersion,
+		ApplicationProfileVersionsColumnUpdatedAt,
+	}
+)
+
+const (
+	pgUniqueViolationCode = "23505"
 )

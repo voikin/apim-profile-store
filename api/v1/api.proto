@@ -148,7 +148,7 @@ message ApplicationProfile {
   string application_id = 2;
   uint32 version = 3;
   google.protobuf.Timestamp created_at = 4;
-  ProfileGraph graph = 5;
+  optional ProfileGraph graph = 5;
 }
 
 message ProfileGraph {

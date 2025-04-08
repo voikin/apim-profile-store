@@ -17,9 +17,11 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 	"github.com/rs/zerolog"
 	"github.com/voikin/apim-profile-store/internal/config"
 	controller_pkg "github.com/voikin/apim-profile-store/internal/controller"
+	neo4j_repo "github.com/voikin/apim-profile-store/internal/repository/neo4j"
 	"github.com/voikin/apim-profile-store/internal/repository/postgres"
 	usecase_pkg "github.com/voikin/apim-profile-store/internal/usecase"
 	profilestorepb "github.com/voikin/apim-profile-store/pkg/api/v1"
@@ -66,8 +68,14 @@ func main() {
 	trManager := manager.Must(trmpgx.NewDefaultFactory(pool))
 	ctxGetter := trmpgx.DefaultCtxGetter
 
+	neo4jDriver, err := neo4j.NewDriverWithContext(cfg.Neo4J.URI, neo4j.BasicAuth(cfg.Neo4J.Username, cfg.Neo4J.Password, ""))
+	if err != nil {
+		logger.Logger.Fatal().Err(err).Msg("neo4j.NewDriverWithContext failed")
+	}
+
 	postgresRepo := postgres.New(pool, trManager, ctxGetter)
-	usecase := usecase_pkg.New(postgresRepo, trManager)
+	neo4jRepo := neo4j_repo.New(neo4jDriver, trManager)
+	usecase := usecase_pkg.New(postgresRepo, neo4jRepo, neo4jRepo)
 	controller := controller_pkg.New(usecase)
 
 	shutdownCh := make(chan os.Signal, 1)
@@ -88,7 +96,7 @@ func main() {
 
 	grpcServer := grpc.NewServer(
 		grpc.ChainUnaryInterceptor(
-			logging.UnaryServerInterceptor(InterceptorLogger(logger.Logger), loggerOpts...),
+			logging.UnaryServerInterceptor(logger.InterceptorLogger(logger.Logger), loggerOpts...),
 		),
 		grpc.ConnectionTimeout(
 			cfg.Server.GRPC.MaxConnectionAge(),
@@ -158,23 +166,4 @@ func main() {
 	}
 
 	logger.Logger.Info().Msg("Server exited gracefully")
-}
-
-func InterceptorLogger(l zerolog.Logger) logging.Logger {
-	return logging.LoggerFunc(func(_ context.Context, lvl logging.Level, msg string, fields ...any) {
-		interceptorLogger := l.With().Fields(fields).Logger()
-
-		switch lvl {
-		case logging.LevelDebug:
-			interceptorLogger.Debug().Msg(msg)
-		case logging.LevelInfo:
-			interceptorLogger.Info().Msg(msg)
-		case logging.LevelWarn:
-			interceptorLogger.Warn().Msg(msg)
-		case logging.LevelError:
-			interceptorLogger.Error().Msg(msg)
-		default:
-			panic(fmt.Sprintf("unknown level %v", lvl))
-		}
-	})
 }
