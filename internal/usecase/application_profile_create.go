@@ -8,7 +8,11 @@ import (
 	"github.com/voikin/apim-profile-store/internal/entity"
 )
 
-func (u *Usecase) CreateApplicationProfile(ctx context.Context, profile *entity.ApplicationProfile, graphData string) (*entity.ApplicationProfile, string, error) {
+func (u *Usecase) CreateApplicationProfile(
+	ctx context.Context,
+	profile *entity.ApplicationProfile,
+	graphData string,
+) (*entity.ApplicationProfile, string, error) {
 	var id uuid.UUID
 	err := u.trManager.Do(ctx, func(ctx context.Context) error {
 		graphID, err := u.neo4jRepo.CreateAPIGraph(ctx, graphData)

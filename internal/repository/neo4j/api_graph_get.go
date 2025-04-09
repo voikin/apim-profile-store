@@ -12,8 +12,7 @@ func (r *Repo) GetAPIGraph(ctx context.Context, id uuid.UUID) (string, error) {
 	session := r.driver.NewSession(ctx, neo4j.SessionConfig{})
 	defer session.Close(ctx)
 
-	var data string
-	_, err := session.ExecuteRead(ctx, func(tx neo4j.ManagedTransaction) (any, error) {
+	data, err := session.ExecuteRead(ctx, func(tx neo4j.ManagedTransaction) (any, error) {
 		result, err := tx.Run(ctx,
 			"MATCH (g:Graph {id: $id}) RETURN g.data",
 			map[string]any{
@@ -28,13 +27,13 @@ func (r *Repo) GetAPIGraph(ctx context.Context, id uuid.UUID) (string, error) {
 			return nil, fmt.Errorf("result.Single: %w", err)
 		}
 
-		data = record.Values[0].(string)
-		return nil, nil
+		return record.Values[0], nil
 	})
-
 	if err != nil {
 		return "", fmt.Errorf("session.ExecuteRead: %w", err)
 	}
 
-	return data, nil
+	res, _ := data.(string)
+
+	return res, nil
 }

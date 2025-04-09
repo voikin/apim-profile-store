@@ -15,7 +15,12 @@ func (r *Repo) ListLatestApplicationProfiles(ctx context.Context) ([]*entity.App
 
 	subquery := sq.Select("MAX(" + ApplicationProfileColumnVersion + ")").
 		From(ApplicationProfileTableName).
-		Where(alias + "." + ApplicationProfileColumnApplicationID + " = " + ApplicationProfileTableName + "." + ApplicationProfileColumnApplicationID)
+		Where(
+			alias + "." +
+				ApplicationProfileColumnApplicationID + " = " +
+				ApplicationProfileTableName + "." +
+				ApplicationProfileColumnApplicationID,
+		)
 
 	query := sq.Select(ApplicationProfileAllColumns...).
 		From(ApplicationProfileTableName + " " + alias).

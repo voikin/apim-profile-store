@@ -1,16 +1,17 @@
 package controller
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/google/uuid"
 	"github.com/voikin/apim-profile-store/internal/entity"
-	profilestorepb "github.com/voikin/apim-profile-store/pkg/api/v1"
+	shared "github.com/voikin/apim-proto/gen/go/shared/v1"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func applicationToAPI(application *entity.Application) *profilestorepb.Application {
-	return &profilestorepb.Application{
+func applicationToAPI(application *entity.Application) *shared.Application {
+	return &shared.Application{
 		Id:        application.ID.String(),
 		Name:      application.Name,
 		CreatedAt: timestamppb.New(application.CreatedAt),
@@ -23,30 +24,32 @@ func applicationFromAPI(name string) *entity.Application {
 	}
 }
 
-func applicationProfileToAPI(applicationProfile *entity.ApplicationProfile, graph string) *profilestorepb.ApplicationProfile {
-	apiApplicationProfile := &profilestorepb.ApplicationProfile{
+func applicationProfileToAPI(applicationProfile *entity.ApplicationProfile, _ string) *shared.ApplicationProfile {
+	apiApplicationProfile := &shared.ApplicationProfile{
 		Id:            applicationProfile.ID.String(),
 		ApplicationId: applicationProfile.ApplicationID.String(),
 		Version:       applicationProfile.Version,
 		CreatedAt:     timestamppb.New(applicationProfile.CreatedAt),
 	}
 
-	if graph != "" {
-		apiApplicationProfile.Graph = &profilestorepb.ProfileGraph{
-			Data: graph,
-		}
-	}
-
 	return apiApplicationProfile
 }
 
-func applicationProfileFromAPI(applicationID string, graph *profilestorepb.ProfileGraph) (*entity.ApplicationProfile, string, error) {
+func applicationProfileFromAPI(
+	applicationID string,
+	apiGraph *shared.APIGraph,
+) (*entity.ApplicationProfile, string, error) {
 	applicationUUID, err := uuid.Parse(applicationID)
 	if err != nil {
 		return nil, "", fmt.Errorf("uuid.Parse: application_id: %w", err)
 	}
 
+	raw, err := json.Marshal(apiGraph)
+	if err != nil {
+		return nil, "", fmt.Errorf("json.Marshal: %w", err)
+	}
+
 	return &entity.ApplicationProfile{
 		ApplicationID: applicationUUID,
-	}, graph.GetData(), nil
+	}, string(raw), nil
 }

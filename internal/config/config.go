@@ -10,24 +10,24 @@ import (
 )
 
 type Config struct {
-	Logger   *logger.Config  `mapstructure:"logger"`
-	Server   *ServerConfig   `mapstructure:"server"`
-	Postgres *PostgresConfig `mapstructure:"postgres"`
-	Neo4J    *Neo4JConfig    `mapstructure:"neo4j"`
+	Logger   *logger.Config `mapstructure:"logger"`
+	Server   *Server        `mapstructure:"server"`
+	Postgres *Postgres      `mapstructure:"postgres"`
+	Neo4J    *Neo4J         `mapstructure:"neo4j"`
 }
 
-type ServerConfig struct {
-	GRPC GRPCConfig `mapstructure:"grpc"`
-	HTTP HTTPConfig `mapstructure:"http"`
+type Server struct {
+	GRPC *GRPC `mapstructure:"grpc"`
+	HTTP *HTTP `mapstructure:"http"`
 }
 
-type GRPCConfig struct {
+type GRPC struct {
 	Host              string `mapstructure:"host"`
 	Port              int    `mapstructure:"port"`
 	MaxConnAgeSeconds int    `mapstructure:"max_conn_age_seconds"`
 }
 
-type HTTPConfig struct {
+type HTTP struct {
 	Host                  string `mapstructure:"host"`
 	Port                  int    `mapstructure:"port"`
 	ReadTimeoutSecs       int    `mapstructure:"read_timeout_seconds"`
@@ -35,29 +35,29 @@ type HTTPConfig struct {
 	ReadHeaderTimeoutSecs int    `mapstructure:"read_header_timeout_seconds"`
 }
 
-type PostgresConfig struct {
+type Postgres struct {
 	DSN string `mapstructure:"dsn"`
 }
 
-type Neo4JConfig struct {
+type Neo4J struct {
 	URI      string `mapstructure:"uri"`
 	Username string `mapstructure:"username"`
 	Password string `mapstructure:"password"`
 }
 
-func (c GRPCConfig) MaxConnectionAge() time.Duration {
+func (c GRPC) MaxConnectionAge() time.Duration {
 	return time.Duration(c.MaxConnAgeSeconds) * time.Second
 }
 
-func (c HTTPConfig) ReadTimeout() time.Duration {
+func (c HTTP) ReadTimeout() time.Duration {
 	return time.Duration(c.ReadTimeoutSecs) * time.Second
 }
 
-func (c HTTPConfig) WriteTimeout() time.Duration {
+func (c HTTP) WriteTimeout() time.Duration {
 	return time.Duration(c.WriteTimeoutSecs) * time.Second
 }
 
-func (c HTTPConfig) ReadHeaderTimeout() time.Duration {
+func (c HTTP) ReadHeaderTimeout() time.Duration {
 	return time.Duration(c.ReadTimeoutSecs) * time.Second
 }
 

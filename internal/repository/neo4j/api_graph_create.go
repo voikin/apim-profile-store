@@ -26,7 +26,8 @@ func (r *Repo) CreateAPIGraph(ctx context.Context, data string) (uuid.UUID, erro
 		return uuid.Nil, fmt.Errorf("tx.Run: %w", err)
 	}
 
-	if _, err := result.Consume(ctx); err != nil {
+	_, err = result.Consume(ctx)
+	if err != nil {
 		return uuid.Nil, fmt.Errorf("result.Consume: %w", err)
 	}
 

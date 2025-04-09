@@ -22,8 +22,15 @@ type (
 		CreateApplicationProfile(ctx context.Context, profile *entity.ApplicationProfile) (uuid.UUID, error)
 		DeleteApplicationProfile(ctx context.Context, id uuid.UUID) error
 		GetApplicationProfileByID(ctx context.Context, id uuid.UUID) (*entity.ApplicationProfile, error)
-		GetApplicationProfileByVersion(ctx context.Context, applicationID uuid.UUID, version uint32) (*entity.ApplicationProfile, error)
-		GetLatestApplicationProfile(ctx context.Context, applicationID uuid.UUID) (*entity.ApplicationProfile, error)
+		GetApplicationProfileByVersion(
+			ctx context.Context,
+			applicationID uuid.UUID,
+			version uint32,
+		) (*entity.ApplicationProfile, error)
+		GetLatestApplicationProfile(
+			ctx context.Context,
+			applicationID uuid.UUID,
+		) (*entity.ApplicationProfile, error)
 		ListLatestApplicationProfiles(ctx context.Context) ([]*entity.ApplicationProfile, error)
 		ListApplicationProfiles(ctx context.Context, applicationID uuid.UUID) ([]*entity.ApplicationProfile, error)
 

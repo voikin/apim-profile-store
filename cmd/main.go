@@ -5,6 +5,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"io"
 	"net"
 	"net/http"
 	"os"
@@ -24,8 +25,8 @@ import (
 	neo4j_repo "github.com/voikin/apim-profile-store/internal/repository/neo4j"
 	"github.com/voikin/apim-profile-store/internal/repository/postgres"
 	usecase_pkg "github.com/voikin/apim-profile-store/internal/usecase"
-	profilestorepb "github.com/voikin/apim-profile-store/pkg/api/v1"
 	"github.com/voikin/apim-profile-store/pkg/logger"
+	profilestorepb "github.com/voikin/apim-proto/gen/go/apim_profile_store/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -46,32 +47,12 @@ func main() {
 	logger.InitGlobalLogger(cfg.Logger)
 
 	grpcAddr := fmt.Sprintf(":%d", cfg.Server.GRPC.Port)
-	httpAddr := fmt.Sprintf(":%d", cfg.Server.HTTP.Port)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	pgCfg, err := pgxpool.ParseConfig(cfg.Postgres.DSN)
-	if err != nil {
-		logger.Logger.Fatal().Err(err).Msg("pgxpool.ParseConfig failed")
-	}
-
-	pool, err := pgxpool.NewWithConfig(ctx, pgCfg)
-	if err != nil {
-		logger.Logger.Fatal().Err(err).Msg("pgxpool.NewWithConfig failed")
-	}
-
-	if err = pool.Ping(ctx); err != nil {
-		logger.Logger.Fatal().Err(err).Msg("postgres.Ping failed")
-	}
-
-	trManager := manager.Must(trmpgx.NewDefaultFactory(pool))
-	ctxGetter := trmpgx.DefaultCtxGetter
-
-	neo4jDriver, err := neo4j.NewDriverWithContext(cfg.Neo4J.URI, neo4j.BasicAuth(cfg.Neo4J.Username, cfg.Neo4J.Password, ""))
-	if err != nil {
-		logger.Logger.Fatal().Err(err).Msg("neo4j.NewDriverWithContext failed")
-	}
+	pool, trManager, ctxGetter := setupPostgres(ctx, cfg.Postgres)
+	neo4jDriver := setupNeo4j(cfg.Neo4J)
 
 	postgresRepo := postgres.New(pool, trManager, ctxGetter)
 	neo4jRepo := neo4j_repo.New(neo4jDriver, trManager)
@@ -81,72 +62,8 @@ func main() {
 	shutdownCh := make(chan os.Signal, 1)
 	signal.Notify(shutdownCh, os.Interrupt, syscall.SIGTERM)
 
-	loggableEvents := []logging.LoggableEvent{
-		logging.StartCall,
-		logging.FinishCall,
-	}
-
-	if logger.Logger.GetLevel() == zerolog.DebugLevel {
-		loggableEvents = append(loggableEvents, logging.PayloadReceived, logging.PayloadSent)
-	}
-
-	loggerOpts := []logging.Option{
-		logging.WithLogOnEvents(loggableEvents...),
-	}
-
-	grpcServer := grpc.NewServer(
-		grpc.ChainUnaryInterceptor(
-			logging.UnaryServerInterceptor(logger.InterceptorLogger(logger.Logger), loggerOpts...),
-		),
-		grpc.ConnectionTimeout(
-			cfg.Server.GRPC.MaxConnectionAge(),
-		),
-	)
-	profilestorepb.RegisterProfileStoreServiceServer(grpcServer, controller)
-
-	grpcListener, err := net.Listen("tcp", grpcAddr)
-	if err != nil {
-		logger.Logger.Fatal().Err(err).Str("addr", grpcAddr).Msg("failed to listen")
-	}
-
-	go func() {
-		logger.Logger.Info().Str("addr", grpcAddr).Msg("gRPC server listening")
-		if err = grpcServer.Serve(grpcListener); err != nil {
-			logger.Logger.Fatal().Err(err).Msg("gRPC server error")
-		}
-	}()
-
-	gwMux := runtime.NewServeMux()
-	dialOpts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-
-	if err = profilestorepb.RegisterProfileStoreServiceHandlerFromEndpoint(ctx, gwMux, grpcAddr, dialOpts); err != nil {
-		logger.Logger.Fatal().Err(err).Msg("failed to register gRPC-Gateway")
-	}
-
-	swaggerMux := http.NewServeMux()
-	swaggerMux.HandleFunc("/swagger/swagger.json", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "pkg/api/v1/api.swagger.json")
-	})
-	swaggerMux.Handle("/swagger/", http.StripPrefix("/swagger/", http.FileServer(http.Dir("pkg/swagger"))))
-
-	mainMux := http.NewServeMux()
-	mainMux.Handle("/", gwMux)
-	mainMux.Handle("/swagger/", swaggerMux)
-
-	httpServer := &http.Server{
-		Addr:              httpAddr,
-		Handler:           mainMux,
-		ReadTimeout:       cfg.Server.HTTP.ReadTimeout(),
-		WriteTimeout:      cfg.Server.HTTP.WriteTimeout(),
-		ReadHeaderTimeout: cfg.Server.HTTP.ReadHeaderTimeout(),
-	}
-
-	go func() {
-		logger.Logger.Info().Str("addr", httpAddr).Msg("HTTP server listening")
-		if err = httpServer.ListenAndServe(); err != nil && errors.Is(err, http.ErrServerClosed) {
-			logger.Logger.Fatal().Err(err).Msg("HTTP server error")
-		}
-	}()
+	grpcServer := runGRPCServer(cfg.Server.GRPC, controller)
+	httpServer := runHTTPServer(ctx, cfg.Server.HTTP, grpcAddr)
 
 	<-shutdownCh
 	logger.Logger.Info().Msg("shutdown signal received")
@@ -166,4 +83,128 @@ func main() {
 	}
 
 	logger.Logger.Info().Msg("Server exited gracefully")
+}
+
+func setupPostgres(ctx context.Context, cfg *config.Postgres) (*pgxpool.Pool, *manager.Manager, *trmpgx.CtxGetter) {
+	pgCfg, err := pgxpool.ParseConfig(cfg.DSN)
+	if err != nil {
+		logger.Logger.Fatal().Err(err).Msg("pgxpool.ParseConfig failed")
+	}
+
+	pool, err := pgxpool.NewWithConfig(ctx, pgCfg)
+	if err != nil {
+		logger.Logger.Fatal().Err(err).Msg("pgxpool.NewWithConfig failed")
+	}
+
+	if err = pool.Ping(ctx); err != nil {
+		logger.Logger.Fatal().Err(err).Msg("postgres.Ping failed")
+	}
+
+	trManager := manager.Must(trmpgx.NewDefaultFactory(pool))
+	ctxGetter := trmpgx.DefaultCtxGetter
+	return pool, trManager, ctxGetter
+}
+
+func setupNeo4j(cfg *config.Neo4J) neo4j.DriverWithContext {
+	driver, err := neo4j.NewDriverWithContext(
+		cfg.URI,
+		neo4j.BasicAuth(cfg.Username, cfg.Password, ""),
+	)
+	if err != nil {
+		logger.Logger.Fatal().Err(err).Msg("neo4j.NewDriverWithContext failed")
+	}
+	return driver
+}
+
+func runGRPCServer(cfg *config.GRPC, controller profilestorepb.ProfileStoreServiceServer) *grpc.Server {
+	grpcAddr := fmt.Sprintf(":%d", cfg.Port)
+
+	loggableEvents := []logging.LoggableEvent{
+		logging.StartCall,
+		logging.FinishCall,
+	}
+	if logger.Logger.GetLevel() == zerolog.DebugLevel {
+		loggableEvents = append(loggableEvents, logging.PayloadReceived, logging.PayloadSent)
+	}
+
+	loggerOpts := []logging.Option{
+		logging.WithLogOnEvents(loggableEvents...),
+	}
+
+	grpcServer := grpc.NewServer(
+		grpc.ChainUnaryInterceptor(
+			logging.UnaryServerInterceptor(logger.InterceptorLogger(logger.Logger), loggerOpts...),
+		),
+		grpc.ConnectionTimeout(cfg.MaxConnectionAge()),
+	)
+
+	profilestorepb.RegisterProfileStoreServiceServer(grpcServer, controller)
+
+	listener, err := net.Listen("tcp", grpcAddr)
+	if err != nil {
+		logger.Logger.Fatal().Err(err).Str("addr", grpcAddr).Msg("failed to listen")
+	}
+
+	go func() {
+		logger.Logger.Info().Int("port", cfg.Port).Msg("gRPC server listening")
+		err = grpcServer.Serve(listener)
+		if err != nil {
+			logger.Logger.Fatal().Err(err).Msg("gRPC server error")
+		}
+	}()
+
+	return grpcServer
+}
+
+func runHTTPServer(ctx context.Context, cfg *config.HTTP, grpcAddr string) *http.Server {
+	httpAddr := fmt.Sprintf(":%d", cfg.Port)
+
+	gwMux := runtime.NewServeMux()
+	dialOpts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+	if err := profilestorepb.RegisterProfileStoreServiceHandlerFromEndpoint(ctx, gwMux, grpcAddr, dialOpts); err != nil {
+		logger.Logger.Fatal().Err(err).Msg("failed to register gRPC-Gateway")
+	}
+
+	swaggerMux := http.NewServeMux()
+	swaggerMux.HandleFunc("/swagger/swagger.json", func(w http.ResponseWriter, _ *http.Request) {
+		swaggerURL := getSwaggerURL()
+		req, err := http.NewRequestWithContext(ctx, http.MethodGet, swaggerURL, nil)
+		if err != nil {
+			http.Error(w, "failed to fetch swagger", http.StatusInternalServerError)
+			return
+		}
+
+		resp, err := http.DefaultClient.Do(req)
+		if err != nil || resp.StatusCode != http.StatusOK {
+			http.Error(w, "failed to fetch swagger", http.StatusInternalServerError)
+			return
+		}
+
+		defer resp.Body.Close()
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = io.Copy(w, resp.Body)
+	})
+	swaggerMux.Handle("/swagger/", http.StripPrefix("/swagger/", http.FileServer(http.Dir("pkg/swagger"))))
+
+	mainMux := http.NewServeMux()
+	mainMux.Handle("/", gwMux)
+	mainMux.Handle("/swagger/", swaggerMux)
+
+	httpServer := &http.Server{
+		Addr:              httpAddr,
+		Handler:           mainMux,
+		ReadTimeout:       cfg.ReadTimeout(),
+		WriteTimeout:      cfg.WriteTimeout(),
+		ReadHeaderTimeout: cfg.ReadHeaderTimeout(),
+	}
+
+	go func() {
+		logger.Logger.Info().Int("port", cfg.Port).Msg("HTTP server listening")
+		err := httpServer.ListenAndServe()
+		if err != nil && !errors.Is(err, http.ErrServerClosed) {
+			logger.Logger.Fatal().Err(err).Msg("HTTP server error")
+		}
+	}()
+
+	return httpServer
 }

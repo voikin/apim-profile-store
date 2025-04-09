@@ -7,7 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/voikin/apim-profile-store/internal/entity"
-	profilestorepb "github.com/voikin/apim-profile-store/pkg/api/v1"
+	profilestorepb "github.com/voikin/apim-proto/gen/go/apim_profile_store/v1"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

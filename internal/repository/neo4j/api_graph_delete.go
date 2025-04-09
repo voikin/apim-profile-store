@@ -23,7 +23,8 @@ func (r *Repo) DeleteAPIGraph(ctx context.Context, id uuid.UUID) error {
 		return fmt.Errorf("tx.Run: %w", err)
 	}
 
-	if _, err := result.Consume(ctx); err != nil {
+	_, err = result.Consume(ctx)
+	if err != nil {
 		return fmt.Errorf("consume: %w", err)
 	}
 

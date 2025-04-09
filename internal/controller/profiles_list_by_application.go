@@ -5,7 +5,8 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	profilestorepb "github.com/voikin/apim-profile-store/pkg/api/v1"
+	profilestorepb "github.com/voikin/apim-proto/gen/go/apim_profile_store/v1"
+	shared "github.com/voikin/apim-proto/gen/go/shared/v1"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -24,7 +25,7 @@ func (c *Controller) ListProfilesByApplication(
 		return nil, fmt.Errorf("c.usecase.ListApplicationProfiles: %w", err)
 	}
 
-	apiProfiles := make([]*profilestorepb.ApplicationProfile, len(profiles))
+	apiProfiles := make([]*shared.ApplicationProfile, len(profiles))
 	for i, profile := range profiles {
 		apiProfiles[i] = applicationProfileToAPI(profile, "")
 	}

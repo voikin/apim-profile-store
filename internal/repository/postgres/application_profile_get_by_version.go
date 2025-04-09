@@ -9,7 +9,11 @@ import (
 	"github.com/voikin/apim-profile-store/internal/entity"
 )
 
-func (r *Repo) GetApplicationProfileByVersion(ctx context.Context, applicationID uuid.UUID, version uint32) (*entity.ApplicationProfile, error) {
+func (r *Repo) GetApplicationProfileByVersion(
+	ctx context.Context,
+	applicationID uuid.UUID,
+	version uint32,
+) (*entity.ApplicationProfile, error) {
 	conn := r.getter.DefaultTrOrDB(ctx, r.db)
 
 	sql, args, err := sq.Select(ApplicationProfileAllColumns...).

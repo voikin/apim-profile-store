@@ -8,7 +8,10 @@ import (
 	"github.com/voikin/apim-profile-store/internal/entity"
 )
 
-func (u *Usecase) GetApplicationProfileByID(ctx context.Context, id uuid.UUID) (*entity.ApplicationProfile, string, error) {
+func (u *Usecase) GetApplicationProfileByID(
+	ctx context.Context,
+	id uuid.UUID,
+) (*entity.ApplicationProfile, string, error) {
 	applicationProfile, err := u.postgresRepo.GetApplicationProfileByID(ctx, id)
 	if err != nil {
 		return nil, "", fmt.Errorf("u.postgresRepo.GetApplicationProfileByID: %w", err)

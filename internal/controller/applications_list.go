@@ -3,7 +3,8 @@ package controller
 import (
 	"context"
 
-	profilestorepb "github.com/voikin/apim-profile-store/pkg/api/v1"
+	profilestorepb "github.com/voikin/apim-proto/gen/go/apim_profile_store/v1"
+	shared "github.com/voikin/apim-proto/gen/go/shared/v1"
 )
 
 func (c *Controller) ListApplications(
@@ -15,7 +16,7 @@ func (c *Controller) ListApplications(
 		return nil, err
 	}
 
-	apiApplications := make([]*profilestorepb.Application, len(applications))
+	apiApplications := make([]*shared.Application, len(applications))
 	for i, application := range applications {
 		apiApplications[i] = applicationToAPI(application)
 	}
