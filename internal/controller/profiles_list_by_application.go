@@ -27,7 +27,7 @@ func (c *Controller) ListProfilesByApplication(
 
 	apiProfiles := make([]*shared.ApplicationProfile, len(profiles))
 	for i, profile := range profiles {
-		apiProfiles[i] = applicationProfileToAPI(profile, "")
+		apiProfiles[i] = applicationProfileToAPI(profile, nil)
 	}
 
 	return &profilestorepb.ListProfilesByApplicationResponse{

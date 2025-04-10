@@ -39,9 +39,9 @@ type (
 	}
 
 	Neo4jRepo interface {
-		CreateAPIGraph(ctx context.Context, data string) (uuid.UUID, error)
+		CreateAPIGraph(ctx context.Context, apiGraph *entity.APIGraph) (uuid.UUID, error)
 		DeleteAPIGraph(ctx context.Context, id uuid.UUID) error
-		GetAPIGraph(ctx context.Context, id uuid.UUID) (string, error)
+		GetAPIGraph(ctx context.Context, id uuid.UUID) (*entity.APIGraph, error)
 	}
 )
 

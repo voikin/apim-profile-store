@@ -11,15 +11,15 @@ import (
 func (u *Usecase) GetLatestApplicationProfile(
 	ctx context.Context,
 	applicationID uuid.UUID,
-) (*entity.ApplicationProfile, string, error) {
+) (*entity.ApplicationProfile, *entity.APIGraph, error) {
 	applicationProfile, err := u.postgresRepo.GetLatestApplicationProfile(ctx, applicationID)
 	if err != nil {
-		return nil, "", fmt.Errorf("u.postgresRepo.GetLatestApplicationProfile: %w", err)
+		return nil, nil, fmt.Errorf("u.postgresRepo.GetLatestApplicationProfile: %w", err)
 	}
 
 	graph, err := u.neo4jRepo.GetAPIGraph(ctx, applicationProfile.GraphID)
 	if err != nil {
-		return nil, "", fmt.Errorf("u.neo4JRepo.GetAPIGraph: %w", err)
+		return nil, nil, fmt.Errorf("u.neo4JRepo.GetAPIGraph: %w", err)
 	}
 
 	return applicationProfile, graph, nil

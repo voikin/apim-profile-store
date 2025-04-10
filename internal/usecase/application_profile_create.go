@@ -11,11 +11,11 @@ import (
 func (u *Usecase) CreateApplicationProfile(
 	ctx context.Context,
 	profile *entity.ApplicationProfile,
-	graphData string,
-) (*entity.ApplicationProfile, string, error) {
+	apiGraph *entity.APIGraph,
+) (*entity.ApplicationProfile, *entity.APIGraph, error) {
 	var id uuid.UUID
 	err := u.trManager.Do(ctx, func(ctx context.Context) error {
-		graphID, err := u.neo4jRepo.CreateAPIGraph(ctx, graphData)
+		graphID, err := u.neo4jRepo.CreateAPIGraph(ctx, apiGraph)
 		if err != nil {
 			return fmt.Errorf("u.neo4JRepo.CreateAPIGraph: %w", err)
 		}
@@ -43,13 +43,13 @@ func (u *Usecase) CreateApplicationProfile(
 		return nil
 	})
 	if err != nil {
-		return nil, "", fmt.Errorf("trManager.Do: %w", err)
+		return nil, nil, fmt.Errorf("trManager.Do: %w", err)
 	}
 
-	applicationProfile, graph, err := u.GetApplicationProfileByID(ctx, id)
+	applicationProfile, apiGraph, err := u.GetApplicationProfileByID(ctx, id)
 	if err != nil {
-		return nil, "", fmt.Errorf("u.GetApplicationProfileByID: %w", err)
+		return nil, nil, fmt.Errorf("u.GetApplicationProfileByID: %w", err)
 	}
 
-	return applicationProfile, graph, nil
+	return applicationProfile, apiGraph, nil
 }

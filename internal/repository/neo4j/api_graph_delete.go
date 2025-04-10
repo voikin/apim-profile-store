@@ -14,18 +14,23 @@ func (r *Repo) DeleteAPIGraph(ctx context.Context, id uuid.UUID) error {
 		return errors.New("no neo4j transaction in context")
 	}
 
-	result, err := tx.Run(ctx,
-		"MATCH (g:Graph {id: $id}) DELETE g",
-		map[string]any{
-			"id": id.String(),
-		})
+	query := `
+		MATCH (g:Graph {id: $id})
+		OPTIONAL MATCH (g)<-[:BELONGS_TO]-(s:PathSegment)
+		OPTIONAL MATCH (g)<-[:BELONGS_TO]-(o:Operation)
+		DETACH DELETE g, s, o
+	`
+
+	result, err := tx.Run(ctx, query, map[string]any{
+		"id": id.String(),
+	})
 	if err != nil {
 		return fmt.Errorf("tx.Run: %w", err)
 	}
 
 	_, err = result.Consume(ctx)
 	if err != nil {
-		return fmt.Errorf("consume: %w", err)
+		return fmt.Errorf("result.Consume: %w", err)
 	}
 
 	return nil

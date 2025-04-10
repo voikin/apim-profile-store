@@ -12,15 +12,15 @@ func (u *Usecase) GetApplicationProfileByVersion(
 	ctx context.Context,
 	applicationID uuid.UUID,
 	version uint32,
-) (*entity.ApplicationProfile, string, error) {
+) (*entity.ApplicationProfile, *entity.APIGraph, error) {
 	applicationProfile, err := u.postgresRepo.GetApplicationProfileByVersion(ctx, applicationID, version)
 	if err != nil {
-		return nil, "", fmt.Errorf("u.postgresRepo.GetApplicationProfileByVersion: %w", err)
+		return nil, nil, fmt.Errorf("u.postgresRepo.GetApplicationProfileByVersion: %w", err)
 	}
 
 	graph, err := u.neo4jRepo.GetAPIGraph(ctx, applicationProfile.GraphID)
 	if err != nil {
-		return nil, "", fmt.Errorf("u.neo4JRepo.GetAPIGraph: %w", err)
+		return nil, nil, fmt.Errorf("u.neo4JRepo.GetAPIGraph: %w", err)
 	}
 
 	return applicationProfile, graph, nil

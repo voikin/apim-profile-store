@@ -18,22 +18,22 @@ type Usecase interface {
 	CreateApplicationProfile(
 		ctx context.Context,
 		profile *entity.ApplicationProfile,
-		graphData string,
-	) (*entity.ApplicationProfile, string, error)
+		apiGraph *entity.APIGraph,
+	) (*entity.ApplicationProfile, *entity.APIGraph, error)
 	DeleteApplicationProfile(ctx context.Context, id uuid.UUID) error
 	GetApplicationProfileByID(
 		ctx context.Context,
 		id uuid.UUID,
-	) (*entity.ApplicationProfile, string, error)
+	) (*entity.ApplicationProfile, *entity.APIGraph, error)
 	GetApplicationProfileByVersion(
 		ctx context.Context,
 		applicationID uuid.UUID,
 		version uint32,
-	) (*entity.ApplicationProfile, string, error)
+	) (*entity.ApplicationProfile, *entity.APIGraph, error)
 	GetLatestApplicationProfile(
 		ctx context.Context,
 		applicationID uuid.UUID,
-	) (*entity.ApplicationProfile, string, error)
+	) (*entity.ApplicationProfile, *entity.APIGraph, error)
 	ListLatestApplicationProfiles(ctx context.Context) ([]*entity.ApplicationProfile, error)
 	ListApplicationProfiles(
 		ctx context.Context,
