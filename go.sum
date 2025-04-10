@@ -120,6 +120,8 @@ github.com/voikin/apim-proto/gen/go v0.1.0 h1:oGRatXx0pujNkM5K55FQ/YC2L27+zh4XFe
 github.com/voikin/apim-proto/gen/go v0.1.0/go.mod h1:48NxGlLdETXPfrA2f6KQ5TjguX/uF3cqSaxvYS0M/f4=
 github.com/voikin/apim-proto/gen/go v0.1.1 h1:l89QKUIil5AoGars9+M/6KSOiTSMuOtQ5GnMwlWoY20=
 github.com/voikin/apim-proto/gen/go v0.1.1/go.mod h1:48NxGlLdETXPfrA2f6KQ5TjguX/uF3cqSaxvYS0M/f4=
+github.com/voikin/apim-proto/gen/go v0.1.5 h1:8ksPryNJ36f1EWOJmRA8XR22q7Q7plQAABOVy0KAv68=
+github.com/voikin/apim-proto/gen/go v0.1.5/go.mod h1:48NxGlLdETXPfrA2f6KQ5TjguX/uF3cqSaxvYS0M/f4=
 github.com/yuin/goldmark v1.3.5/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
 go.opentelemetry.io/auto/sdk v1.1.0 h1:cH53jehLUN6UFLY71z+NDOiNJqDdPRaXzTel0sJySYA=

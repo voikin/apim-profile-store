@@ -77,6 +77,7 @@ func ToEntityGraph(pb *sharedpb.APIGraph) *entity.APIGraph {
 			Method:          op.Method,
 			PathSegmentID:   op.PathSegmentId,
 			QueryParameters: toEntityParameters(op.QueryParameters),
+			StatusCodes:     op.StatusCodes,
 		}
 	}
 
@@ -159,6 +160,7 @@ func ToProtoGraph(e *entity.APIGraph) *sharedpb.APIGraph {
 			Method:          op.Method,
 			PathSegmentId:   op.PathSegmentID,
 			QueryParameters: toProtoParameters(op.QueryParameters),
+			StatusCodes:     op.StatusCodes,
 		}
 	}
 

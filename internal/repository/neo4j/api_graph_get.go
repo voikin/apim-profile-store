@@ -87,7 +87,7 @@ func (r *Repo) GetAPIGraph(ctx context.Context, graphID uuid.UUID) (*entity.APIG
 
 		opQuery := `
 			MATCH (op:Operation)-[:ON]->(seg:PathSegment), (op)-[:BELONGS_TO]->(g:Graph {id: $graphID})
-			RETURN op.id AS id, op.method AS method, seg.id AS segment_id
+			RETURN op.id AS id, op.method AS method, seg.id AS segment_id, op.status_codes AS status_codes
 		`
 		opResult, err := tx.Run(ctx, opQuery, map[string]any{"graphID": graphID.String()})
 		if err != nil {
@@ -100,11 +100,20 @@ func (r *Repo) GetAPIGraph(ctx context.Context, graphID uuid.UUID) (*entity.APIG
 			id, _ := record.Get("id")
 			method, _ := record.Get("method")
 			segmentID, _ := record.Get("segment_id")
+			statusCodesRaw, _ := record.Get("status_codes")
+
+			var statusCodes []int32
+			if statusCodesRaw != nil {
+				for _, val := range statusCodesRaw.([]any) {
+					statusCodes = append(statusCodes, int32(val.(int64)))
+				}
+			}
 
 			operations = append(operations, entity.Operation{
 				ID:              strings.TrimPrefix(id.(string), prefix),
 				Method:          method.(string),
 				PathSegmentID:   strings.TrimPrefix(segmentID.(string), prefix),
+				StatusCodes:     statusCodes,
 				QueryParameters: nil,
 			})
 		}

@@ -11,7 +11,7 @@ require (
 	github.com/neo4j/neo4j-go-driver/v5 v5.28.0
 	github.com/rs/zerolog v1.34.0
 	github.com/spf13/viper v1.20.1
-	github.com/voikin/apim-proto/gen/go v0.1.1
+	github.com/voikin/apim-proto/gen/go v0.1.5
 	google.golang.org/grpc v1.71.1
 	google.golang.org/protobuf v1.36.6
 )

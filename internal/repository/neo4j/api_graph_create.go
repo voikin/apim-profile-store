@@ -95,14 +95,16 @@ func (r *Repo) CreateAPIGraph(ctx context.Context, apiGraph *entity.APIGraph) (u
 			`MATCH (g:Graph {id: $graphID}), (seg:PathSegment {id: $segmentID})
 			 CREATE (op:Operation {
 				id: $id,
-				method: $method
+				method: $method,
+				status_codes: $status_codes
 			 })-[:ON]->(seg)
 			 CREATE (op)-[:BELONGS_TO]->(g)`,
 			map[string]any{
-				"graphID":   id.String(),
-				"id":        uniqueOpID,
-				"method":    op.Method,
-				"segmentID": uniqueSegID,
+				"graphID":      id.String(),
+				"id":           uniqueOpID,
+				"method":       op.Method,
+				"segmentID":    uniqueSegID,
+				"status_codes": op.StatusCodes,
 			},
 		)
 		if err != nil {

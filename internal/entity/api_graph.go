@@ -35,6 +35,7 @@ type Operation struct {
 	Method          string
 	PathSegmentID   string
 	QueryParameters []Parameter
+	StatusCodes     []int32
 }
 
 type APIGraph struct {
