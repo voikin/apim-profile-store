@@ -39,6 +39,14 @@ type Usecase interface {
 		ctx context.Context,
 		applicationID uuid.UUID,
 	) ([]*entity.ApplicationProfile, error)
+	DiffApplicationProfiles(
+		ctx context.Context,
+		applicationID, old, new uuid.UUID,
+	) (
+		added []*entity.Operation,
+		removed []*entity.Operation,
+		err error,
+	)
 }
 
 type Controller struct {

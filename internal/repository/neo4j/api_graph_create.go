@@ -112,5 +112,22 @@ func (r *Repo) CreateAPIGraph(ctx context.Context, apiGraph *entity.APIGraph) (u
 		}
 	}
 
+	for _, tr := range apiGraph.Transitions {
+		fromID := prefix + tr.From
+		toID := prefix + tr.To
+
+		_, err := tx.Run(ctx,
+			`MATCH (from:Operation {id: $from}), (to:Operation {id: $to})
+			 CREATE (from)-[:NEXT]->(to)`,
+			map[string]any{
+				"from": fromID,
+				"to":   toID,
+			},
+		)
+		if err != nil {
+			return uuid.Nil, fmt.Errorf("create Transition: %w", err)
+		}
+	}
+
 	return id, nil
 }

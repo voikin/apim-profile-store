@@ -3,8 +3,9 @@
 LOCAL_BIN     := $(CURDIR)/bin
 MIGRATION_DIR := $(CURDIR)/migrations
 
-GOLANGCI_VERSION      := v1.64.5
-GOOSE_VERSION         := v3.24.2
+GOLANGCI_VERSION := v1.64.5
+GOOSE_VERSION    := v3.24.2
+MINIMOCK_VERSION := v3.4.5
 
 RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 $(eval $(RUN_ARGS):;@:)
@@ -18,9 +19,10 @@ endef
 .PHONY: install
 install:
 	mkdir -p $(LOCAL_BIN)
-	go mod tidy
+	# go mod tidy
 	$(call install_tool,github.com/pressly/goose/v3/cmd/goose,$(GOOSE_VERSION))
 	$(call install_tool,github.com/golangci/golangci-lint/cmd/golangci-lint,$(GOLANGCI_VERSION))
+	$(call install_tool,github.com/gojuno/minimock/v3/cmd/minimock,$(MINIMOCK_VERSION))
 
 # --- LINT ---
 
@@ -48,3 +50,16 @@ ifndef name
 	$(error migration name not specified. Use: make migrate_new name=your_migration)
 endif
 	$(LOCAL_BIN)/goose -dir $(MIGRATION_DIR) create $(name) sql
+
+.PHONY: mock
+mock:
+	$(LOCAL_BIN)/minimock -i github.com/voikin/apim-profile-store/internal/usecase.PostgresRepo \
+	-o ./internal/usecase/mocks \
+	-s _mock.go
+	$(LOCAL_BIN)/minimock -i github.com/voikin/apim-profile-store/internal/usecase.Neo4jRepo \
+	-o ./internal/usecase/mocks \
+	-s _mock.go
+	$(LOCAL_BIN)/minimock -i github.com/voikin/apim-profile-store/internal/usecase.TrManager \
+	-o ./internal/usecase/mocks \
+	-s _mock.go
+	
