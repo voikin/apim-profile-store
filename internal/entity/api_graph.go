@@ -34,12 +34,18 @@ type Operation struct {
 	ID              string
 	Method          string
 	PathSegmentID   string
-	QueryParameters []Parameter
+	QueryParameters []*Parameter
 	StatusCodes     []int32
 }
 
+type Transition struct {
+	From string
+	To   string
+}
+
 type APIGraph struct {
-	Segments   []PathSegment
-	Edges      []Edge
-	Operations []Operation
+	Segments    []*PathSegment
+	Edges       []*Edge
+	Operations  []*Operation
+	Transitions []*Transition
 }

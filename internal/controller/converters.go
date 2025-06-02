@@ -57,22 +57,22 @@ func ToEntityGraph(pb *sharedpb.APIGraph) *entity.APIGraph {
 		return nil
 	}
 
-	segments := make([]entity.PathSegment, len(pb.Segments))
+	segments := make([]*entity.PathSegment, len(pb.Segments))
 	for i, s := range pb.Segments {
 		segments[i] = toEntitySegment(s)
 	}
 
-	edges := make([]entity.Edge, len(pb.Edges))
+	edges := make([]*entity.Edge, len(pb.Edges))
 	for i, e := range pb.Edges {
-		edges[i] = entity.Edge{
+		edges[i] = &entity.Edge{
 			From: e.From,
 			To:   e.To,
 		}
 	}
 
-	operations := make([]entity.Operation, len(pb.Operations))
+	operations := make([]*entity.Operation, len(pb.Operations))
 	for i, op := range pb.Operations {
-		operations[i] = entity.Operation{
+		operations[i] = &entity.Operation{
 			ID:              op.Id,
 			Method:          op.Method,
 			PathSegmentID:   op.PathSegmentId,
@@ -81,24 +81,33 @@ func ToEntityGraph(pb *sharedpb.APIGraph) *entity.APIGraph {
 		}
 	}
 
+	transitions := make([]*entity.Transition, len(pb.Transitions))
+	for i, tr := range pb.Transitions {
+		transitions[i] = &entity.Transition{
+			From: tr.From,
+			To:   tr.To,
+		}
+	}
+
 	return &entity.APIGraph{
 		Segments:   segments,
 		Edges:      edges,
 		Operations: operations,
+		Transitions: transitions,
 	}
 }
 
-func toEntitySegment(s *sharedpb.PathSegment) entity.PathSegment {
+func toEntitySegment(s *sharedpb.PathSegment) *entity.PathSegment {
 	switch seg := s.Segment.(type) {
 	case *sharedpb.PathSegment_Static:
-		return entity.PathSegment{
+		return &entity.PathSegment{
 			Static: &entity.StaticSegment{
 				ID:   seg.Static.Id,
 				Name: seg.Static.Name,
 			},
 		}
 	case *sharedpb.PathSegment_Param:
-		return entity.PathSegment{
+		return &entity.PathSegment{
 			Param: &entity.Parameter{
 				ID:      seg.Param.Id,
 				Name:    seg.Param.Name,
@@ -107,14 +116,14 @@ func toEntitySegment(s *sharedpb.PathSegment) entity.PathSegment {
 			},
 		}
 	default:
-		return entity.PathSegment{}
+		return &entity.PathSegment{}
 	}
 }
 
-func toEntityParameters(params []*sharedpb.Parameter) []entity.Parameter {
-	result := make([]entity.Parameter, len(params))
+func toEntityParameters(params []*sharedpb.Parameter) []*entity.Parameter {
+	result := make([]*entity.Parameter, len(params))
 	for i, p := range params {
-		result[i] = entity.Parameter{
+		result[i] = &entity.Parameter{
 			ID:      p.Id,
 			Name:    p.Name,
 			Type:    toEntityParamType(p.Type),
@@ -164,14 +173,23 @@ func ToProtoGraph(e *entity.APIGraph) *sharedpb.APIGraph {
 		}
 	}
 
+	transitions := make([]*sharedpb.Transition, len(e.Transitions))
+	for i, tr := range e.Transitions {
+		transitions[i] = &sharedpb.Transition{
+			From: tr.From,
+			To:   tr.To,
+		}
+	}
+
 	return &sharedpb.APIGraph{
-		Segments:   segments,
-		Edges:      edges,
-		Operations: operations,
+		Segments:    segments,
+		Edges:       edges,
+		Operations:  operations,
+		Transitions: transitions,
 	}
 }
 
-func toProtoSegment(s entity.PathSegment) *sharedpb.PathSegment {
+func toProtoSegment(s *entity.PathSegment) *sharedpb.PathSegment {
 	if s.Static != nil {
 		return &sharedpb.PathSegment{
 			Segment: &sharedpb.PathSegment_Static{
@@ -199,7 +217,7 @@ func toProtoSegment(s entity.PathSegment) *sharedpb.PathSegment {
 	return &sharedpb.PathSegment{}
 }
 
-func toProtoParameters(params []entity.Parameter) []*sharedpb.Parameter {
+func toProtoParameters(params []*entity.Parameter) []*sharedpb.Parameter {
 	result := make([]*sharedpb.Parameter, len(params))
 	for i, p := range params {
 		result[i] = &sharedpb.Parameter{
@@ -221,4 +239,23 @@ func toProtoParamType(pt entity.ParameterType) sharedpb.ParameterType {
 	default:
 		return sharedpb.ParameterType_PARAMETER_TYPE_UNSPECIFIED
 	}
+}
+
+func toProtoOperation(o *entity.Operation) *sharedpb.Operation {
+	return &sharedpb.Operation{
+		Id:              o.ID,
+		Method:          o.Method,
+		PathSegmentId:   o.PathSegmentID,
+		QueryParameters: toProtoParameters(o.QueryParameters),
+		StatusCodes:     o.StatusCodes,
+	}
+}
+
+func toProtoOperations(source []*entity.Operation) []*sharedpb.Operation {
+	operations := make([]*sharedpb.Operation, len(source))
+	for i, op := range source {
+		operations[i] = toProtoOperation(op)
+	}
+
+	return operations
 }
